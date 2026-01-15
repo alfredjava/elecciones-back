@@ -51,4 +51,11 @@ public class CandidatoResource {
             return map;
         }).collect(Collectors.toList());
     }
+
+    @GET
+    @Operation(summary = "Lista todos los candidatos")
+    public List<Candidato> listarTodos() {
+        // listAll() es un método estático de PanacheEntity
+        return Candidato.listAll();
+    }
 }
