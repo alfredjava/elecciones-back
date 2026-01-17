@@ -1,13 +1,14 @@
-# 1. Etapa de construcción (Build) con Java 21
+# Fase de construcción
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /home/app
 
-# Copiar pom.xml y descargar dependencias para aprovechar la caché
+# 1. Copia el archivo de configuración de dependencias
 COPY pom.xml .
-RUN mvn dependency:go-offline
 
-# Copiar código y compilar
-COPY src/main ./src/main
+# 2. Copia TODA la carpeta src (que contiene a main y todo lo demás)
+COPY src ./src
+
+# 3. Compila el proyecto
 RUN mvn package -DskipTests
 
 # 2. Etapa de ejecución (Run) con JRE 21
