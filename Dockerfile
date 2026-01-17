@@ -7,7 +7,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline
 
 # Copiar código y compilar
-COPY src ./src
+COPY src/main ./src/main
 RUN mvn package -DskipTests
 
 # 2. Etapa de ejecución (Run) con JRE 21
