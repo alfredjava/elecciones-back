@@ -1,30 +1,25 @@
-# Fase de construcción
+# Fase de construcción con Java 21
 FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /home/app
+WORKDIR /app
 
-# 1. Copia el archivo de configuración de dependencias
-COPY pom.xml .
+# Copiamos ABSOLUTAMENTE TODO lo que hay en el repo al contenedor
+# Esto garantiza que encuentre el pom.xml y la carpeta src/main
+COPY . .
 
-# 2. Copia TODA la carpeta src (que contiene a main y todo lo demás)
-COPY src ./src
+# Ejecutamos la compilación
+RUN mvn clean package -DskipTests
 
-# 3. Compila el proyecto
-RUN mvn package -DskipTests
-
-# 2. Etapa de ejecución (Run) con JRE 21
+# Fase de ejecución
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /deployments
 
-# Copiamos los artefactos generados por Quarkus
-COPY --from=build /home/app/target/quarkus-app/lib/ /deployments/lib/
-COPY --from=build /home/app/target/quarkus-app/*.jar /deployments/
-COPY --from=build /home/app/target/quarkus-app/app/ /deployments/app/
-COPY --from=build /home/app/target/quarkus-app/quarkus/ /deployments/quarkus/
+# Copiamos los resultados
+COPY --from=build /app/target/quarkus-app/lib/ /deployments/lib/
+COPY --from=build /app/target/quarkus-app/*.jar /deployments/
+COPY --from=build /app/target/quarkus-app/app/ /deployments/app/
+COPY --from=build /app/target/quarkus-app/quarkus/ /deployments/quarkus/
 
-# Variables de entorno para Render
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Xmx350m"
 EXPOSE 8080
-
 USER 185
-
 ENTRYPOINT [ "java", "-jar", "/deployments/quarkus-run.jar" ]
