@@ -3,8 +3,10 @@ INSERT INTO candidatos (id, nombre, partido, fotoUrl, propuesta) VALUES (nextval
 INSERT INTO candidatos (id, nombre, partido, fotoUrl, propuesta) VALUES (nextval('candidatos_SEQ'), 'Carlos Ruiz', 'Unión Estudiantil', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos', 'Mejorar las zonas deportivas');
 INSERT INTO candidatos (id, nombre, partido, fotoUrl, propuesta) VALUES (nextval('candidatos_SEQ'), 'Elena Mora', 'Fuerza Universitaria', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena', 'Más becas de transporte');
 
--- Insertar Estudiantes de Prueba
--- El campo yaVoto es false (0) por defecto
-INSERT INTO estudiantes (id, carnet, nombre, yaVoto) VALUES (nextval('estudiantes_SEQ'), '2024001', 'Alfredo Pérez', false);
-INSERT INTO estudiantes (id, carnet, nombre, yaVoto) VALUES (nextval('estudiantes_SEQ'), '2024002', 'Maria Lopez', false);
-INSERT INTO estudiantes (id, carnet, nombre, yaVoto) VALUES (nextval('estudiantes_SEQ'), '2024003', 'Juan Castro', false);
+-- Primero asegúrate de que la secuencia exista si usas PanacheEntity
+-- INSERT para Estudiantes
+INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, ya_voto)
+VALUES (nextval('estudiantes_SEQ'), '2024001', '12345678', 'Alfredo Pérez', false);
+
+INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, ya_voto)
+VALUES (nextval('estudiantes_SEQ'), '2024002', '87654321', 'Maria Lopez', false);

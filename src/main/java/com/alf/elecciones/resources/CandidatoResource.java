@@ -37,17 +37,17 @@ public class CandidatoResource {
     @Path("/resultados")
     @Operation(summary = "Obtiene el conteo de votos por candidato para las gráficas")
     public List<Map<String, Object>> obtenerResultados() {
-        // Consulta JPQL para agrupar votos por candidato
-        // v.candidato.nombre es el camino a través de la relación @ManyToOne
+        // Agrupamos por nombre y partido para mayor detalle en el frontend
         List<Object[]> resultados = Voto.getEntityManager()
-                .createQuery("SELECT v.candidato.nombre, COUNT(v) FROM Voto v GROUP BY v.candidato.nombre")
+                .createQuery("SELECT v.candidato.nombre, v.candidato.partido, COUNT(v) " +
+                        "FROM Voto v GROUP BY v.candidato.nombre, v.candidato.partido")
                 .getResultList();
 
-        // Transformamos a una lista de mapas para que el JSON sea fácil de leer en React
         return resultados.stream().map(fila -> {
             Map<String, Object> map = new HashMap<>();
             map.put("nombre", fila[0]);
-            map.put("votos", fila[1]);
+            map.put("partido", fila[1]);
+            map.put("votos", fila[2]);
             return map;
         }).collect(Collectors.toList());
     }

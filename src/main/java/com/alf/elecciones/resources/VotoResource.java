@@ -41,22 +41,24 @@ public class VotoResource {
         if (candidato == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Candidato no encontrado").build();
         }
-        // 4. Obtener la IP desde el contexto del servidor
+
+        // 4. Obtener la IP (importante para auditoría en Render)
         String ipReal = postmanRequest.getHeader("X-Forwarded-For");
         if (ipReal == null || ipReal.isEmpty()) {
             ipReal = postmanRequest.remoteAddress().host();
         }
 
-        // 5. Registrar el voto
+        // 5. Registrar el voto (Esto es lo que cuenta para el total)
         Voto nuevoVoto = new Voto();
         nuevoVoto.estudiante = estudiante;
         nuevoVoto.candidato = candidato;
         nuevoVoto.ipOrigen = ipReal;
-        nuevoVoto.persist();
+        nuevoVoto.persist(); // Aquí se guarda en la tabla 'votos'
 
-        // 5. Marcar al estudiante como "ya votó"
+        // 6. Marcar al estudiante como "ya votó" para bloquear reintentos
         estudiante.yaVoto = true;
-        estudiante.persist();
+        // No hace falta llamar a persist() aquí si 'estudiante' es una entidad manejada por Hibernate,
+        // se guardará al terminar la transacción automáticamente.
 
         return Response.status(Response.Status.CREATED).entity("Voto registrado con éxito").build();
     }
