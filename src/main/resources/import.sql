@@ -5,8 +5,8 @@ INSERT INTO candidatos (id, nombre, partido, fotoUrl, propuesta) VALUES (nextval
 
 -- Primero asegúrate de que la secuencia exista si usas PanacheEntity
 -- INSERT para Estudiantes
-INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, ya_voto)
-VALUES (nextval('estudiantes_SEQ'), '2024001', '12345678', 'Alfredo Pérez', false);
+INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, apellidos, ya_voto, facultad)
+VALUES (nextval('estudiantes_SEQ'), '2024001', '12345678', 'Alfredo', 'Pérez', false, 'Ingeniería');
 
-INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, ya_voto)
-VALUES (nextval('estudiantes_SEQ'), '2024002', '87654321', 'Maria Lopez', false);
+INSERT INTO estudiantes (id, carnet, documento_identidad, nombre, apellidos, ya_voto, facultad)
+VALUES (nextval('estudiantes_SEQ'), '2024002', '87654321', 'Maria', 'Lopez', false,'Ciencias Sociales');

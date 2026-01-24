@@ -18,8 +18,15 @@ public class Estudiante extends PanacheEntity {
     @Column(nullable = false)
     public String nombre;
 
+    @Column(nullable = false)
+    public String apellidos;
+
+
     @Column(name = "ya_voto")
     public boolean yaVoto = false;
+
+    @Column(nullable = false)
+    public String facultad;
 
     // Método para buscar por carnet (Panache)
     public static Estudiante findByCarnet(String carnet) {

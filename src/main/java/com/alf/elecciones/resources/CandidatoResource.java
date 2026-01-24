@@ -2,11 +2,19 @@ package com.alf.elecciones.resources;
 
 import com.alf.elecciones.entities.Candidato;
 import com.alf.elecciones.entities.Voto;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.jboss.resteasy.reactive.RestForm;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,5 +65,28 @@ public class CandidatoResource {
     public List<Candidato> listarTodos() {
         // listAll() es un método estático de PanacheEntity
         return Candidato.listAll();
+    }
+
+    @POST
+    @Path("/importar")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Transactional
+    public Response importarExcel(@RestForm("file") InputStream fileInputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // Saltar encabezado
+
+            Candidato c = new Candidato();
+            c.nombre = row.getCell(0).getStringCellValue();
+            c.partido = row.getCell(1).getStringCellValue();
+            c.fotoUrl = row.getCell(2).getStringCellValue();
+            c.propuesta = row.getCell(3).getStringCellValue();
+
+            c.persist();
+        }
+        workbook.close();
+        return Response.ok("Candidatos cargados con éxito").build();
     }
 }
